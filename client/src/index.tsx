@@ -1,16 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { ApolloClient } from "apollo-client";
+import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
+import { HttpLink } from "apollo-link-http";
+import { ApolloProvider, useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 
-import Pages from './pages';
-import Login from './pages/login';
-import { resolvers, typeDefs } from './resolvers';
-import injectStyles from './styles';
+import Pages from "./pages";
+import HomePage from "./pages/home";
+import Login from "./pages/login";
+import { resolvers, typeDefs } from "./resolvers";
+import injectStyles from "./styles";
 
 // Set up our apollo-client to point at the server we created
 // this can be local or a remote endpoint
@@ -18,11 +19,11 @@ const cache = new InMemoryCache();
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache,
   link: new HttpLink({
-    uri: 'http://localhost:4000/graphql',
+    uri: "http://localhost:4000/graphql",
     headers: {
-      authorization: localStorage.getItem('token'),
-      'client-name': 'Space Explorer [web]',
-      'client-version': '1.0.0',
+      authorization: localStorage.getItem("token"),
+      "client-name": "Space Explorer [web]",
+      "client-version": "1.0.0",
     },
   }),
   resolvers,
@@ -31,7 +32,7 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 
 cache.writeData({
   data: {
-    isLoggedIn: !!localStorage.getItem('token'),
+    isLoggedIn: !!localStorage.getItem("token"),
     cartItems: [],
   },
 });
@@ -52,16 +53,10 @@ const IS_LOGGED_IN = gql`
   }
 `;
 
-function IsLoggedIn() {
-  const { data } = useQuery(IS_LOGGED_IN);
-  return data.isLoggedIn ? <Pages /> : <Login />;
-}
-
 injectStyles();
 ReactDOM.render(
-
   <ApolloProvider client={client}>
-    <IsLoggedIn />
+    <HomePage />
   </ApolloProvider>,
-  document.getElementById('root'),
+  document.getElementById("root")
 );
